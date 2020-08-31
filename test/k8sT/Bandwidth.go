@@ -32,7 +32,7 @@ var _ = Describe("K8sBandwidthTest", func() {
 		testDSInf  = "run=netperf-inf"
 		testClient = "run=netperf-client"
 
-		maxRateDeviation = 10
+		maxRateDeviation = 5
 	)
 
 	var (
@@ -172,14 +172,15 @@ var _ = Describe("K8sBandwidthTest", func() {
 			DeployCiliumOptionsAndDNS(kubectl, ciliumFilename, map[string]string{
 				"global.tunnel": "vxlan",
 			})
-			// TODO: super_netperf from host ns
 			testNetperf(podLabels, false)
+			testNetperf(podLabels, true)
 		})
 		It("Checks Pod to Pod bandwidth, geneve tunneling", func() {
 			DeployCiliumOptionsAndDNS(kubectl, ciliumFilename, map[string]string{
 				"global.tunnel": "geneve",
 			})
 			testNetperf(podLabels, false)
+			testNetperf(podLabels, true)
 		})
 		It("Checks Pod to Pod bandwidth, direct routing", func() {
 			DeployCiliumOptionsAndDNS(kubectl, ciliumFilename, map[string]string{
@@ -187,6 +188,7 @@ var _ = Describe("K8sBandwidthTest", func() {
 				"global.autoDirectNodeRoutes": "true",
 			})
 			testNetperf(podLabels, false)
+			testNetperf(podLabels, true)
 		})
 	})
 })
